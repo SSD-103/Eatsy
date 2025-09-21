@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^9.36.0",
+    "eslint-formatter-html": "^2.7.3",
+    "eslint-plugin-security": "^3.0.1"
+  }
+}
