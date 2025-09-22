@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
 const NOTIFICATION_SERVICE_URL = process.env.NOTIFICATION_SERVICE_URL || "http://localhost:4005/api";
 const userService = require("./user.service");
 

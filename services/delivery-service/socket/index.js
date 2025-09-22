@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('../common/safeAxios');
 const Delivery = require('../models/delivery.model');
 
 module.exports = (io) => {

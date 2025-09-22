@@ -1,4 +1,5 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
+const mongoose = require('mongoose');
 const Delivery = require("../models/delivery.model");
 const { sendSMS, sendEmail } = require("../services/notification.service");
 // const { getIO } = require("../../order-service/sockets/socket");
@@ -11,6 +12,10 @@ exports.assignDeliveryPerson = async (req, res) => {
   try {
     const { id, restaurantId, customerId, deliveryAddress, deliveryPersonId } =
       req.body;
+    // Validate supplied order id to avoid unexpected URL constructions
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid order id' });
+    }
     console.log("Assigning delivery person for order ID:", id);
 
     // Fetch order from Order Service
@@ -102,6 +107,9 @@ exports.assignDeliveryPerson = async (req, res) => {
 exports.getDeliveryStatus = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
     const delivery = await Delivery.findOne({ orderId: id });
     if (!delivery) {
       return res.status(404).json({ error: "Delivery not found" });
@@ -139,6 +147,9 @@ exports.getDeliveryStatus = async (req, res) => {
 exports.updateDeliveryStatus = async (req, res) => {
   try {
     const { id } = req.params; // Use id from request parameters
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
     const { status } = req.body;
     const delivery = await Delivery.findOne({ orderId: id });
     if (!delivery) {
@@ -187,6 +198,9 @@ exports.updateDeliveryStatus = async (req, res) => {
 exports.getDeliveryPersonTasks = async (req, res) => {
   try {
     const { deliveryPersonId } = req.params;
+    if (!deliveryPersonId || !mongoose.Types.ObjectId.isValid(deliveryPersonId)) {
+      return res.status(400).json({ error: 'Invalid deliveryPersonId' });
+    }
     // if (deliveryPersonId !== req.user.id) {
     //   return res.status(403).json({ error: "Unauthorized" });
     // }
@@ -204,6 +218,9 @@ exports.getDeliveryPersonTasks = async (req, res) => {
 exports.updateDeliveryPersonLocation = async (req, res) => {
   try {
     const { deliveryPersonId } = req.params;
+    if (!deliveryPersonId || !mongoose.Types.ObjectId.isValid(deliveryPersonId)) {
+      return res.status(400).json({ error: 'Invalid deliveryPersonId' });
+    }
     const { location } = req.body;
     if (deliveryPersonId !== req.user.id) {
       return res.status(403).json({ error: "Unauthorized" });
@@ -243,6 +260,9 @@ exports.updateDeliveryPersonLocation = async (req, res) => {
 exports.updateOrderStatusByDeliveryPerson = async (req, res) => {
   try {
     const { orderId } = req.params;
+    if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ error: 'Invalid orderId' });
+    }
     const { status } = req.body;
     const deliveryPersonId = req.user.id;
 
@@ -280,6 +300,9 @@ exports.updateOrderStatusByDeliveryPerson = async (req, res) => {
 exports.getDeliveryPersonById = async (req, res) => {
   try {
     const { deliveryPersonId } = req.params;
+    if (!deliveryPersonId || !mongoose.Types.ObjectId.isValid(deliveryPersonId)) {
+      return res.status(400).json({ error: 'Invalid deliveryPersonId' });
+    }
     const deliveryPerson = await Delivery.find({ deliveryPersonId: deliveryPersonId });
     if (!deliveryPerson) {
       return res.status(404).json({ error: "Delivery person not found" });

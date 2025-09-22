@@ -1,5 +1,6 @@
 const Order = require('../models/order.model');
-const axios = require('axios');
+const axios = require('../common/safeAxios');
+const mongoose = require('mongoose');
 // const { sendSMS, sendEmail } = require('../services/notification.service');
 // const { io } = require('../socket'); // Remove WebSocket instance import
 const DELIVERY_SERVICE_URL = process.env.DELIVERY_SERVICE_URL || 'http://localhost:4003';
@@ -67,14 +68,19 @@ exports.placeOrder = async (req, res) => {
   
       // Notify Delivery Service with full order details
       try {
-        await axios.post(`${DELIVERY_SERVICE_URL}/api/delivery/assign`, {
-          id: orderId,
-          restaurantId,
-          customerId,
-          deliveryAddress,
-          status: 'pending'
-        });
-        console.log('Delivery service notified');
+        // validate orderId and restaurantId before notifying external service
+        if (!mongoose.Types.ObjectId.isValid(orderId) || (restaurantId && !mongoose.Types.ObjectId.isValid(restaurantId))) {
+          console.error('Invalid IDs before notifying delivery service', { orderId, restaurantId });
+        } else {
+          await axios.post(`${DELIVERY_SERVICE_URL}/api/delivery/assign`, {
+            id: orderId,
+            restaurantId,
+            customerId,
+            deliveryAddress,
+            status: 'pending'
+          });
+          console.log('Delivery service notified');
+        }
       } catch (deliveryError) {
         console.error('Failed to notify Delivery Service:', deliveryError);
         // Continue to respond to client even if delivery assignment fails
