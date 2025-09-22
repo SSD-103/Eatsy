@@ -22,7 +22,7 @@ const getUserEmailByType = async ({ id, receiverType }) => {
     throw new Error("Invalid receiverType");
 
   } catch (error) {
-    console.error(`Failed to retrieve email for ${receiverType} (ID: ${id}):`, error.message);
+    console.error(`Failed to retrieve email for ${receiverType} (ID: ${id}):`, error);
     return null;
   }
 };

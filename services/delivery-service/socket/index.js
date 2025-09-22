@@ -49,7 +49,8 @@ module.exports = (io) => {
             { location: geoLocation }
           );
         } catch (userServiceError) {
-          console.error('Error updating location in User Service:', userServiceError.message);
+          // Log full error internally, but do not expose details to clients
+          console.error('Error updating location in User Service:', userServiceError);
           // Continue even if user service update fails
         }
 
@@ -83,14 +84,17 @@ module.exports = (io) => {
               message: 'Only user location updated (no active delivery)'
             });
           } catch (error) {
-            const errorMsg = { error: 'Failed to update location: ' + error.message };
+            // Log internal error and send a generic failure message to the client
+            console.error('Failed to update user location (no active delivery):', error);
+            const errorMsg = { error: 'Failed to update location' };
             socket.emit('locationUpdateError', errorMsg);
             if (callback) callback({ success: false, ...errorMsg });
           }
         }
       } catch (error) {
-        console.error('Error in updateDeliveryPersonLocation:', error.message);
-        const errorMsg = { error: 'Server error: ' + error.message };
+        // Log full error internally and emit a generic error message to clients
+        console.error('Error in updateDeliveryPersonLocation:', error);
+        const errorMsg = { error: 'Server error' };
         socket.emit('locationUpdateError', errorMsg);
         if (callback) callback({ success: false, ...errorMsg });
       }

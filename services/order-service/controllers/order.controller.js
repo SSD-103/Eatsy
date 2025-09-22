@@ -32,7 +32,8 @@ const createOrder = async (req, res) => {
       res.status(404).json({ error: "Customer not found" });
     }
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error('Error in createOrder:', err);
+    res.status(400).json({ error: 'Bad request' });
   }
 };
 
@@ -47,7 +48,8 @@ const getOrders = async (req, res) => {
     const orders = await Order.find(filter);
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error in getOrders:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -58,7 +60,8 @@ const getOrderById = async (req, res) => {
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json(order);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error in getOrderById:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -84,7 +87,8 @@ const getNearbyOrders = async (req, res) => {
 
     res.json(nearbyOrders);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error in getNearbyOrders:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -101,7 +105,8 @@ const updateDeliveryPersonID = async (req, res) => {
     await sendPayback({ status: "assigned", order });
     res.json(order);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error('Error in updateDeliveryPersonID:', err);
+    res.status(400).json({ error: 'Bad request' });
   }
 };
 
@@ -117,8 +122,9 @@ const updatePaymentID = async (req, res) => {
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json(order);
   } catch (err) {
-    res.status(400).json({ error: err.message });
-    console.log("Error here: ", error);
+    console.error('Error in updatePaymentID:', err);
+    res.status(400).json({ error: 'Bad request' });
+    console.log('Error here: ', err);
   }
 };
 
@@ -193,7 +199,8 @@ const updateOrderStatus = async (req, res) => {
 
     res.json(order);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error('Error in updateOrderStatus:', err);
+    res.status(400).json({ error: 'Bad request' });
   }
 };
 
@@ -203,7 +210,8 @@ const getOrderByRefNo = async (req, res) => {
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json(order);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error in getOrderByRefNo:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -225,8 +233,8 @@ const getMyOrders = async (req, res) => {
     );
     res.json(ordersWithRestaurants);
   } catch (error) {
-    console.error("Error in getCustomerOrders:", error);
-    res.status(500).json({ error: error.message });
+    console.error('Error in getCustomerOrders:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -236,8 +244,8 @@ const getOrdersByRestuarantID = async (req, res) => {
     const orders = await Order.find({ restaurantID: id }).sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
-    console.error("Error in getCustomerOrders:", error);
-    res.status(500).json({ error: error.message });
+    console.error('Error in getOrdersByRestuarantID:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

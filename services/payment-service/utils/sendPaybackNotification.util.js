@@ -17,7 +17,7 @@ const sendPaybackNotification = async({ to, subject, text, html }) => {
         });
         console.log(`Notification sent to ${to}`);
     } catch (error) {
-        console.error(`Failed to send notification to ${to}`, error.message);
+        console.error(`Failed to send notification to ${to}`, error);
     }
 }
 

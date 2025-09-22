@@ -20,7 +20,7 @@ function MyMenus() {
       const menuItems = await getMyMenuItems();
       setMenuItems(menuItems);
     } catch (error) {
-      setError(error.message);
+      setError("Failed to load menu items. Please try again.");
     } finally {
       setIsLoading(false);
     }

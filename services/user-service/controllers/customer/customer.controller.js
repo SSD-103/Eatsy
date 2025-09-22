@@ -30,7 +30,7 @@ const register = async (req, res) => {
     await newCustomer.save();
     res.status(201).json({ msg: "Customer registered successfully" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -61,7 +61,7 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -73,7 +73,7 @@ const getCustomerByID = async (req, res) => {
     }
     res.status(200).json(customer);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 

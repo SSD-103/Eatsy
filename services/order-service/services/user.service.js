@@ -6,7 +6,7 @@ const getRestaurantNameById = async (restaurantID) => {
     const response = await axios.get(`${USER_SERVICE_BASE_URL}/restaurant/${restaurantID}`);
     return response.data.name;
   } catch (error) {
-    console.error('Failed to fetch customer from user-service:', error.message);
+    console.error('Failed to fetch customer from user-service:', error);
     return null;
   }
 };
@@ -16,7 +16,7 @@ const getCustomerById = async (customerID) => {
     const response = await axios.get(`${USER_SERVICE_BASE_URL}/customer/${customerID}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch customer from user-service:', error.message);
+    console.error('Failed to fetch customer from user-service:', error);
     return null;
   }
 };
@@ -32,7 +32,7 @@ const getCustomerEmailById = async (customerID) => {
 
     return email;
   } catch (error) {
-    console.error('Failed to fetch customer from user-service:', error.message);
+    console.error('Failed to fetch customer from user-service:', error);
     return null;
   }
 };
@@ -42,7 +42,7 @@ const getAllDeliveryPersons = async () => {
     const response = await axios.get(`${USER_SERVICE_BASE_URL}/deliveryPerson/person/ids`);
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch customer from user-service:', error.message);
+    console.error('Failed to fetch customer from user-service:', error);
     return null;
   }
 };
