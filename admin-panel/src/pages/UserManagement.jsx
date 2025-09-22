@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { userAPI } from '../../../admin-panel/src/services';
-import { useToast } from '../../../admin-panel/src/utils/alert-utils/ToastUtil';
+import { userAPI } from '../services';
+import { useToast } from '../utils/alert-utils/ToastUtil';
 
 function UserManagement() {
   const [deliveryPersons, setDeliveryPersons] = useState([]);
