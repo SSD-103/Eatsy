@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const passport = require("passport");
 
 // Load environment variables
 if (process.env.NODE_ENV === 'production') {
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
