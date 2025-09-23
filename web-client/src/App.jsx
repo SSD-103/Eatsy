@@ -8,6 +8,7 @@ import LandingPage from "./pages/landing/LandingPage";
 import Login from "./pages/customer/auth/Login";
 import SignUp from "./pages/customer/auth/SignUp";
 import CustomerLayout from "./layout/user-layouts/CustomerLayout";
+import AuthCallback from "./pages/customer/auth/AuthCallback";
 
 //Restaurant
 import RestaurantLanding from "./pages/restaurant/auth/RestaurantLanding";
@@ -28,6 +29,7 @@ function App() {
 
         {/* Customer Management */}
         <Route path={"/auth/login"} element={<Login />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path={"/auth/signup"} element={<SignUp />} />
         <Route path={"/customer/*"} element={<CustomerLayout />} />
       

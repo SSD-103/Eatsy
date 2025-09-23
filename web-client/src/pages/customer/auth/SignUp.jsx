@@ -137,6 +137,10 @@ function SignUp() {
               </button>
             </div>
           </form>
+          {/* New Google Sign Up Button */}
+          <a href={userAPI.googleAuth} className="btn btn-outline w-full mt-2">
+            Sign up with Google
+          </a>
           <div className="text-sm text-center mt-4">
             <small>
               Already have an account?{" "}
