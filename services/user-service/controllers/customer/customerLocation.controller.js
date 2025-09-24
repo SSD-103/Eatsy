@@ -6,7 +6,7 @@ const getCustomerLocations = async (req, res) => {
     const locations = await CustomerLocation.find({ customerID: id });
     res.status(200).json(locations);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -16,7 +16,7 @@ const getAllCustomerLocations = async (req, res) => {
     const locations = await CustomerLocation.find();
     res.status(200).json(locations);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -33,7 +33,7 @@ const addCustomerLocation = async (req, res) => {
 
     res.status(201).json({ msg: "Location added successfully" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -45,7 +45,7 @@ const deleteCustomerLocation = async (req, res) => {
     }
     res.status(200).json({ msg: "Location deleted successfully" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -57,7 +57,7 @@ const getLocationByID = async (req, res) => {
     }
     res.status(200).json(location);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 

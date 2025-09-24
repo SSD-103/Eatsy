@@ -14,7 +14,7 @@ export const deleteMyMenuItem = async (id) => {
         );
         return response;
     } catch (error) {
-        console.error("Failed to delete menu item:", error.message);
+        console.error("Failed to delete menu item:", error);
         return null;
     }
 };
