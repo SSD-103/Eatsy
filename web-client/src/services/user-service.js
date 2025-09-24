@@ -6,6 +6,7 @@ export const userAPI = {
   // Customer
   CustomerRegister: `${USER_API_URL}/customer/register`,
   CustomerLogin: `${USER_API_URL}/customer/login`,
+  googleAuth: `${USER_API_URL}/customer/auth/google`,
   getCustomerByID: (id) => `${USER_API_URL}/customer/${id}`,
 
   // CustomerLocation

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const passport = require("passport");
 const http = require('http');
 const cookieParser = require('cookie-parser'); // Added for handling cookies
 const rateLimit = require('express-rate-limit'); // Added for general rate limiting
@@ -14,6 +15,11 @@ if (process.env.NODE_ENV === 'production') {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(passport.initialize());
 
 // General rate limiter (e.g., 100 requests per 15 minutes per IP)
 const generalLimiter = rateLimit({
