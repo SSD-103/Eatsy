@@ -13,7 +13,7 @@ function MyOrders() {
       const response = await getCustomerMyOrders();
       setMyOrders(response);
     } catch (error) {
-      console.error("Failed to fetch my orders:", error.message);
+      console.error("Failed to fetch my orders:", error);
     }
   };
 

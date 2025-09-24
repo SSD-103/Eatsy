@@ -25,12 +25,36 @@ const register = [
         ]
       });
 
+
       if (existingRestaurant) {
         return res.status(400).json({
           msg: "Restaurant already exists with provided email, phone, or username",
           field: existingRestaurant.email ? 'email' : existingRestaurant.phone ? 'phone' : 'username'
         });
       }
+      
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newRestaurant = new Restaurant({
+      name,
+      email,
+      phone,
+      username,
+      password: hashedPassword,
+      profileImage,
+      address,
+      location,
+      owner,
+      businessRegNo,
+      coverImage,
+    });
+
+    await newRestaurant.save();
+    res.status(201).json({ msg: "Restaurant registered successfully" });
+  } catch (err) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
 
       const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -121,6 +145,32 @@ const login = [
       console.error('Restaurant login error:', err.message);
       res.status(500).json({ msg: "Server error during login" });
     }
+
+    const token = jwt.sign({ id: restaurant._id }, process.env.JWT_SECRET, {
+      expiresIn: "3h",
+    });
+
+    res.status(200).json({
+      token,
+      user: {
+        id: restaurant._id,
+        username: restaurant.username,
+        name: restaurant.name,
+        availability: restaurant.availability,
+        accountStatus: restaurant.accountStatus,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
+const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find();
+    res.status(200).json(restaurants);
+  } catch (err) {
+    res.status(500).json({ msg: "Internal server error" });
   }
 ];
 
@@ -150,6 +200,9 @@ const getAllRestaurants = [
       console.error('Get restaurants error:', err.message);
       res.status(500).json({ msg: "Server error" });
     }
+    res.status(200).json(restaurant);
+  } catch (err) {
+    res.status(500).json({ msg: "Internal server error" });
   }
 ];
 
@@ -230,6 +283,21 @@ const getRestaurantAvailability = [
       console.error('Get availability error:', err.message);
       res.status(500).json({ error: "Server error" });
     }
+    // Respond with the updated restaurant data
+    res.json(restaurant);
+  } catch (err) {
+    res.status(400).json({ error: "Bad request" });
+  }
+};
+
+const getRestaurantAvailability = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const restaurant = await Restaurant.findById(id);
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    res.json({ availability: restaurant.availability });
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
   }
 ];
 
@@ -267,6 +335,9 @@ const verifyRestaurant = [
       console.error('Verify restaurant error:', err.message);
       res.status(500).json({ error: "Server error" });
     }
+    res.json({ verified: true, verifiedBy: restaurant.verifiedBy });
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
   }
 ];
 

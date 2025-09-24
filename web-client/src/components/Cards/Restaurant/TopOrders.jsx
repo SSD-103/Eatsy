@@ -11,7 +11,7 @@ function TopOrders() {
       const response = await getMyTopOrders();
       setTopOrders(response);
     } catch (error) {
-      console.error("Failed to fetch menu items:", error.message);
+      console.error("Failed to fetch menu items:", error);
     }
   };
 

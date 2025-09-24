@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
 const NOTIFICATION_SERVICE_URL = process.env.NOTIFICATION_SERVICE_URL || "http://localhost:4005/api";
 const userService = require("./user.service");
 
@@ -41,7 +41,7 @@ const sendOrderPlacementNotification = async ({
       console.log(`Email not found for ${to}`);
     }
   } catch (error) {
-    console.error(`Failed to send notification to ${to}`, error.message);
+    console.error(`Failed to send notification to ${to}`, error);
   }
 };
 
@@ -83,7 +83,7 @@ const sendOrderAcceptanceNotification = async ({
     }
     
   } catch (error) {
-    console.error(`Failed to send notification to ${to}`, error.message);
+    console.error(`Failed to send notification to ${to}`, error);
   }
 };
 
@@ -124,7 +124,7 @@ const sendOrderRejectedNotification = async ({
     }
     console.log(`Notification sent to ${to}`);
   } catch (error) {
-    console.error(`Failed to send notification to ${to}`, error.message);
+    console.error(`Failed to send notification to ${to}`, error);
   }
 };
 

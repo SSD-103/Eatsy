@@ -1,5 +1,6 @@
 const Order = require('../models/order.model');
-const axios = require('axios');
+const axios = require('../common/safeAxios');
+const mongoose = require('mongoose');
 // const { sendSMS, sendEmail } = require('../services/notification.service');
 // const { io } = require('../socket'); // Remove WebSocket instance import
 const DELIVERY_SERVICE_URL = process.env.DELIVERY_SERVICE_URL || 'http://localhost:4003';
@@ -67,23 +68,28 @@ exports.placeOrder = async (req, res) => {
   
       // Notify Delivery Service with full order details
       try {
-        await axios.post(`${DELIVERY_SERVICE_URL}/api/delivery/assign`, {
-          id: orderId,
-          restaurantId,
-          customerId,
-          deliveryAddress,
-          status: 'pending'
-        });
-        console.log('Delivery service notified');
+        // validate orderId and restaurantId before notifying external service
+        if (!mongoose.Types.ObjectId.isValid(orderId) || (restaurantId && !mongoose.Types.ObjectId.isValid(restaurantId))) {
+          console.error('Invalid IDs before notifying delivery service', { orderId, restaurantId });
+        } else {
+          await axios.post(`${DELIVERY_SERVICE_URL}/api/delivery/assign`, {
+            id: orderId,
+            restaurantId,
+            customerId,
+            deliveryAddress,
+            status: 'pending'
+          });
+          console.log('Delivery service notified');
+        }
       } catch (deliveryError) {
-        console.error('Failed to notify Delivery Service:', deliveryError.message);
+        console.error('Failed to notify Delivery Service:', deliveryError);
         // Continue to respond to client even if delivery assignment fails
       }
   
       res.json({ message: 'Order placed', orderId });
     } catch (error) {
       console.error('Error in placeOrder:', error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
@@ -132,7 +138,7 @@ exports.modifyOrder = async (req, res) => {
     res.json({ message: 'Order modified', orderId: id });
   } catch (error) {
     console.error('Error in modifyOrder:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -149,7 +155,7 @@ exports.getOrderStatus = async (req, res) => {
     res.json({ orderId: id, status: order.status, totalAmount: order.totalAmount });
   } catch (error) {
     console.error('Error in getOrderStatus:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -164,7 +170,7 @@ exports.getCustomerOrders = async (req, res) => {
     res.json(orders);
   } catch (error) {
     console.error('Error in getCustomerOrders:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -188,7 +194,7 @@ exports.updateOrderStatus = async (req, res) => {
     res.json({ message: 'Order status updated' });
   } catch (error) {
     console.error('Error in updateOrderStatus:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -202,6 +208,6 @@ exports.getOrderById = async (req, res) => {
     res.json(order);
   } catch (error) {
     console.error('Error in getOrderById:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };

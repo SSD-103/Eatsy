@@ -6,7 +6,7 @@ export const userAPI = {
     AdminRegister: `${USER_API_URL}/admin/register`,
     AdminLogin: `${USER_API_URL}/admin/login`,
     GetAllAdmins: `${USER_API_URL}/admin`,
-    GetAdminByID: `${USER_API_URL}/admin/:id`,
+    GetAdminByID: (id) =>  `${USER_API_URL}/admin/${id}`,
 
     
     GetAllRestaurants: `${USER_API_URL}/restaurant`,
