@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const {apiLimiter} = require('./middleware/rateLimiter');
+const http = require('http');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.production' });
@@ -33,11 +34,13 @@ app.use('/api/notifications', notificationRouter);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connected to DB")
-    app.listen(PORT, () => {
-      console.log(`Notification Service running on port ${PORT}`);
-    });
+    console.log("Connected to DB");
+
+    const server = http.createServer(app);
+    server.setTimeout(10 * 1000);
+    server.keepAliveTimeout = 5 * 1000;
+    server.headersTimeout = 6 * 1000;
+
+    server.listen(PORT, () => console.log(`Notification Service running on port ${PORT}`));
   })
-  .catch((err) => {
-    console.log("DB connection error:", err)
-  })
+  .catch(err => console.log("DB connection error:", err));

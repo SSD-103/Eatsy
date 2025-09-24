@@ -4,9 +4,9 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const dotenv = require("dotenv");
+const { apiLimiter } = require("./middleware/rateLimiter");
 const deliveryRoutes = require("./routes/delivery.routes");
 const socketHandler = require("./socket");
-const { apiLimiter } = require("./middleware/rateLimiter");
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.production' });
@@ -52,14 +52,12 @@ socketHandler(io);
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("MongoDB connection error:", err));
+
+server.setTimeout(10 * 1000);
+server.keepAliveTimeout = 5 * 1000;
+server.headersTimeout = 6 * 1000;
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Delivery Service running on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Delivery Service running on port ${PORT}`));
