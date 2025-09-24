@@ -1,4 +1,5 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
+const mongoose = require('mongoose');
 const Delivery = require("../models/delivery.model");
 const { sendSMS, sendEmail } = require("../services/notification.service");
 // const { getIO } = require("../../order-service/sockets/socket");
@@ -11,6 +12,10 @@ exports.assignDeliveryPerson = async (req, res) => {
   try {
     const { id, restaurantId, customerId, deliveryAddress, deliveryPersonId } =
       req.body;
+    // Validate supplied order id to avoid unexpected URL constructions
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid order id' });
+    }
     console.log("Assigning delivery person for order ID:", id);
 
     // Fetch order from Order Service
@@ -20,7 +25,7 @@ exports.assignDeliveryPerson = async (req, res) => {
       order = response.data;
       console.log("Fetched order:", order);
     } catch (error) {
-      console.log("Order not found:", error.message);
+      console.log("Order not found:", error);
       return res.status(404).json({ error: "Order not found" });
     }
 
@@ -39,7 +44,7 @@ exports.assignDeliveryPerson = async (req, res) => {
       deliveryPersons = response.data;
       console.log("Fetched delivery persons:", deliveryPersons);
     } catch (error) {
-      console.log("Error fetching delivery persons:", error.message);
+      console.log("Error fetching delivery persons:", error);
       return res.status(500).json({ error: "Failed to find delivery persons" });
     }
 
@@ -64,7 +69,7 @@ exports.assignDeliveryPerson = async (req, res) => {
         { availability: false }
       );
     } catch (error) {
-      console.error("Failed to update delivery person:", error.message);
+      console.error("Failed to update delivery person:", error);
       await Delivery.deleteOne({ _id: delivery._id });
       return res
         .status(500)
@@ -85,7 +90,7 @@ exports.assignDeliveryPerson = async (req, res) => {
       //   status: "ready",
       // });
     } catch (error) {
-      console.error("Failed to update order status:", error.message);
+      console.error("Failed to update order status:", error);
     }
 
     res.json({
@@ -93,15 +98,18 @@ exports.assignDeliveryPerson = async (req, res) => {
       deliveryPersonId: deliveryPerson._id,
       deliveryId: delivery._id,
     });
-  } catch (error) {
+    } catch (error) {
     console.error("Error in assignDeliveryPerson:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 exports.getDeliveryStatus = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
     const delivery = await Delivery.findOne({ orderId: id });
     if (!delivery) {
       return res.status(404).json({ error: "Delivery not found" });
@@ -116,7 +124,7 @@ exports.getDeliveryStatus = async (req, res) => {
       );
       deliveryPerson = response.data;
     } catch (error) {
-      console.log("Error fetching delivery person:", error.message);
+      console.log("Error fetching delivery person:", error);
       deliveryPerson = null;
     }
 
@@ -132,13 +140,16 @@ exports.getDeliveryStatus = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in getDeliveryStatus:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 exports.updateDeliveryStatus = async (req, res) => {
   try {
     const { id } = req.params; // Use id from request parameters
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
     const { status } = req.body;
     const delivery = await Delivery.findOne({ orderId: id });
     if (!delivery) {
@@ -154,7 +165,7 @@ exports.updateDeliveryStatus = async (req, res) => {
           // { headers: { Authorization: `Bearer ${process.env.SERVICE_JWT}` } }
         );
       } catch (error) {
-        console.error("Failed to update delivery person:", error.message);
+        console.error("Failed to update delivery person:", error);
       }
     }
 
@@ -168,7 +179,7 @@ exports.updateDeliveryStatus = async (req, res) => {
         // { headers: { Authorization: `Bearer ${process.env.SERVICE_JWT}` } }
       );
     } catch (error) {
-      console.error("Failed to update order status:", error.message);
+      console.error("Failed to update order status:", error);
     }
 
     // Emit status update via WebSocket
@@ -180,13 +191,16 @@ exports.updateDeliveryStatus = async (req, res) => {
     res.json({ message: "Status updated" });
   } catch (error) {
     console.error("Error in updateDeliveryStatus:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 exports.getDeliveryPersonTasks = async (req, res) => {
   try {
     const { deliveryPersonId } = req.params;
+    if (!deliveryPersonId || !mongoose.Types.ObjectId.isValid(deliveryPersonId)) {
+      return res.status(400).json({ error: 'Invalid deliveryPersonId' });
+    }
     // if (deliveryPersonId !== req.user.id) {
     //   return res.status(403).json({ error: "Unauthorized" });
     // }
@@ -197,13 +211,16 @@ exports.getDeliveryPersonTasks = async (req, res) => {
     res.json(deliveries);
   } catch (error) {
     console.error("Error in getDeliveryPersonTasks:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 exports.updateDeliveryPersonLocation = async (req, res) => {
   try {
     const { deliveryPersonId } = req.params;
+    if (!deliveryPersonId || !mongoose.Types.ObjectId.isValid(deliveryPersonId)) {
+      return res.status(400).json({ error: 'Invalid deliveryPersonId' });
+    }
     const { location } = req.body;
     if (deliveryPersonId !== req.user.id) {
       return res.status(403).json({ error: "Unauthorized" });
@@ -225,7 +242,7 @@ exports.updateDeliveryPersonLocation = async (req, res) => {
         { headers: { Authorization: `Bearer ${process.env.SERVICE_JWT}` } }
       );
     } catch (error) {
-      console.error("Error updating delivery person location:", error.message);
+      console.error("Error updating delivery person location:", error);
       return res.status(500).json({ error: "Failed to update location" });
     }
 
@@ -236,13 +253,16 @@ exports.updateDeliveryPersonLocation = async (req, res) => {
     res.json({ message: "Location updated", location });
   } catch (error) {
     console.error("Error in updateDeliveryPersonLocation:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 exports.updateOrderStatusByDeliveryPerson = async (req, res) => {
   try {
     const { orderId } = req.params;
+    if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ error: 'Invalid orderId' });
+    }
     const { status } = req.body;
     const deliveryPersonId = req.user.id;
 
@@ -266,20 +286,23 @@ exports.updateOrderStatusByDeliveryPerson = async (req, res) => {
     } catch (error) {
       console.error(
         "Failed to update order status in Order Service:",
-        error.message
+        error
       );
     }
 
     res.json({ message: "Order status updated", status });
   } catch (error) {
     console.error("Error in updateOrderStatusByDeliveryPerson:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 exports.getDeliveryPersonById = async (req, res) => {
   try {
     const { deliveryPersonId } = req.params;
+    if (!deliveryPersonId || !mongoose.Types.ObjectId.isValid(deliveryPersonId)) {
+      return res.status(400).json({ error: 'Invalid deliveryPersonId' });
+    }
     const deliveryPerson = await Delivery.find({ deliveryPersonId: deliveryPersonId });
     if (!deliveryPerson) {
       return res.status(404).json({ error: "Delivery person not found" });
@@ -287,6 +310,6 @@ exports.getDeliveryPersonById = async (req, res) => {
     res.json(deliveryPerson);
   } catch (error) {
     console.error("Error in getDeliveryPersonById:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };

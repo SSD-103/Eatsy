@@ -34,10 +34,7 @@ function RestaurantView() {
       const response = await getRestaurantByID(id);
       return response;
     } catch (error) {
-      console.error(
-        "Failed to fetch customer from user-service:",
-        error.message
-      );
+        console.error("Failed to fetch customer from user-service:", error);
       return null;
     }
   };
@@ -47,7 +44,7 @@ function RestaurantView() {
       const response = await getMenuItemsByRestaurantID(id);
       return Array.isArray(response?.menuItems) ? response.menuItems : [];
     } catch (error) {
-      console.error("Failed to fetch menu items:", error.message);
+  console.error("Failed to fetch menu items:", error);
       return [];
     }
   };
@@ -72,8 +69,8 @@ function RestaurantView() {
         setMenuItems(menuItemsData);
         setIsLoading(false);
       } catch (error) {
-        setError("Failed to load restaurant or menu items");
-        console.error("Error fetching data:", error.message);
+  setError("Failed to load restaurant or menu items");
+  console.error("Error fetching data:", error);
         setIsLoading(false);
       }
     };

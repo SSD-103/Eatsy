@@ -6,6 +6,8 @@ export const userAPI = {
   // Customer
   CustomerRegister: `${USER_API_URL}/customer/register`,
   CustomerLogin: `${USER_API_URL}/customer/login`,
+  googleAuth: `${USER_API_URL}/customer/auth/google`,
+  getCustomerByID: (id) => `${USER_API_URL}/customer/${id}`,
 
   // CustomerLocation
   addCustomerLocation: `${USER_API_URL}/customer-location`,
@@ -26,7 +28,7 @@ export const userAPI = {
   DeliveryLogin: `${USER_API_URL}/deliveryPerson/login`,
   getNearbyDeliveryPersons: `${USER_API_URL}/deliveryPerson/nearby`,
   getDeliveryPersons: `${USER_API_URL}/deliveryPerson/`,
-  getDeliveryPersonById: `${USER_API_URL}/deliveryPerson/:id`,
+  getDeliveryPersonById:  (id) => `${USER_API_URL}/deliveryPerson/${id}`,
   updateDeliveryPerson: `${USER_API_URL}/deliveryPerson/:id`,
   updateAvailability: `${USER_API_URL}/deliveryPerson/availability/:id`,
   updateLocation: `${USER_API_URL}/deliveryPerson/location/:id`,

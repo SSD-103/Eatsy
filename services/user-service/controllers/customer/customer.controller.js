@@ -1,13 +1,45 @@
 const Customer = require("../../models/customer/customer.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { validateCustomerRegister, validateCustomerLogin, validateCustomerId } = require('../../middleware/validation.middleware');
+const winston = require("winston");
+
+// Create Winston logger instance
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'logs/security.log', level: 'error' }) // For persistent error logs
+  ],
+});
 const validator = require("validator"); // Added for input validation
 const crypto = require("crypto"); // For generating random refresh tokens
 
-const register = async (req, res) => {
-  try {
-    const { name, email, phone, username, password } = req.body;
+const register = [
+  // Validation middleware first
+  validateCustomerRegister,
+  
+  // Controller logic
+  async (req, res) => {
+    try {
+      // Input is already validated and sanitized by middleware
+      const { name, email, phone, username, password } = req.body;
 
+      // Safe MongoDB query with validated input
+      const existingUser = await Customer.findOne({
+        $or: [
+          { email: req.body.email },
+          { username: req.body.username },
+          { phone: req.body.phone }
+        ]
+      });
+
+      if (existingUser) {
+        return res.status(400).json({
     // Input validation
     if (!validator.isEmail(email)) {
       return res.status(400).json({ msg: "Invalid email format" });
@@ -26,34 +58,95 @@ const register = async (req, res) => {
       $or: [{ email }, { username }, { phone }],
     });
     if (existingUser) {
+      logger.info('Registration attempt failed: User already exists', { email, username, phone });
       return res
         .status(400)
         .json({
           msg: "Customer already exists with provided email, username, or phone",
+          field: existingUser.email ? 'email' : existingUser.username ? 'username' : 'phone'
         });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      // Create customer with explicit field assignment
+      const newCustomer = new Customer({
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        username: req.body.username,
+        password: hashedPassword,
+      });
+      await newCustomer.save();
+      
+      res.status(201).json({ 
+        msg: "Customer registered successfully",
+        user: {
+          id: newCustomer._id,
+          name: newCustomer.name,
+          username: newCustomer.username
+        }
+      });
+    } catch (err) {
+      console.error('Registration error:', err.message);
+      res.status(500).json({ msg: "Server error during registration" });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newCustomer = new Customer({
-      name,
-      email,
-      phone,
-      username,
-      password: hashedPassword,
-    });
-
     await newCustomer.save();
+    logger.info('Customer registered successfully', { customerId: newCustomer._id, username });
     res.status(201).json({ msg: "Customer registered successfully" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    logger.error('Error during customer registration', { error: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
-};
+];
 
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
+const login = [
+  validateCustomerLogin,
+  
+  async (req, res) => {
+    try {
+      // Input is already validated and sanitized
+      const { username, password } = req.body;
 
+      // Safe single-field query
+      const customer = await Customer.findOne({ 
+        username: req.body.username 
+      });
+      if (!customer) {
+        return res.status(400).json({ 
+          msg: "Invalid username or password" 
+        });
+      }
+
+      const isMatch = await bcrypt.compare(password, customer.password);
+      if (!isMatch) {
+        return res.status(400).json({ 
+          msg: "Invalid username or password" 
+        });
+      }
+
+      const token = jwt.sign(
+        { 
+          id: customer._id,
+          username: customer.username,
+          type: 'customer'
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "3h" }
+      );
+
+      res.status(200).json({
+        token,
+        user: {
+          id: customer._id,
+          name: customer.name,
+          username: customer.username,
+        },
+      });
+    } catch (err) {
+      console.error('Login error:', err.message);
+      res.status(500).json({ msg: "Server error during login" });
+    }
     // Input validation
     if (!validator.isLength(username, { min: 3, max: 20 })) {
       return res.status(400).json({ msg: "Invalid username" });
@@ -63,12 +156,16 @@ const login = async (req, res) => {
     }
 
     const customer = await Customer.findOne({ username });
-    if (!customer)
+    if (!customer) {
+      logger.warn('Login attempt failed: Invalid username', { username });
       return res.status(400).json({ msg: "Invalid username or password" });
+    }
 
     const isMatch = await bcrypt.compare(password, customer.password);
-    if (!isMatch)
+    if (!isMatch) {
+      logger.warn('Login attempt failed: Invalid password', { username });
       return res.status(400).json({ msg: "Invalid username or password" });
+    }
 
     // Generate access token (short-lived)
     const accessToken = jwt.sign(
@@ -101,6 +198,7 @@ const login = async (req, res) => {
       path: "/api/customer/refresh", // Restrict to refresh endpoint
     });
 
+    logger.info('Customer login successful', { customerId: customer._id, username });
     res.status(200).json({
       user: {
         id: customer._id,
@@ -109,7 +207,8 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    logger.error('Error during customer login', { error: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -173,19 +272,43 @@ const logout = async (req, res) => {
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
-};
+];
 
+const getCustomerByID = [
+  validateCustomerId,
+  
+  async (req, res) => {
+    try {
+      // Input is already validated as MongoDB ObjectId
+      const customerId = req.params.id;
+      const customer = await Customer.findById(customerId).select("-password");
+      
+      if (!customer) {
+        return res.status(404).json({ msg: "Customer not found" });
+      }
+      
+      res.status(200).json({
+        success: true,
+        customer: customer
+      });
+    } catch (err) {
+      console.error('Get customer error:', err.message);
+      res.status(500).json({ msg: "Server error" });
+    }
 const getCustomerByID = async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id).select("-password -refreshTokens");
     if (!customer) {
+      logger.info('Customer retrieval failed: Not found', { customerId: req.params.id });
       return res.status(404).json({ msg: "Customer not found" });
     }
+    logger.info('Customer retrieved successfully', { customerId: req.params.id });
     res.status(200).json(customer);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    logger.error('Error during customer retrieval', { customerId: req.params.id, error: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
-};
+];
 
 module.exports = {
   register,

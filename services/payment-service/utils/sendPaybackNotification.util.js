@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
 
 const NOTIFICATION_SERVICE_URL = process.env.NOTIFICATION_SERVICE_URL || "http://localhost:4005/api/notifications/send";
 
@@ -17,7 +17,7 @@ const sendPaybackNotification = async({ to, subject, text, html }) => {
         });
         console.log(`Notification sent to ${to}`);
     } catch (error) {
-        console.error(`Failed to send notification to ${to}`, error.message);
+        console.error(`Failed to send notification to ${to}`, error);
     }
 }
 

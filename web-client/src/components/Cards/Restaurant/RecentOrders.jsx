@@ -10,7 +10,7 @@ function RecentOrders() {
       const response = await getMyRecentOrders();
       setRecentOrders(response);
     } catch (error) {
-      console.error("Failed to fetch menu items:", error.message);
+      console.error("Failed to fetch menu items:", error);
     }
   };
 

@@ -44,7 +44,7 @@ const register = async (req, res) => {
     await newDeliveryPerson.save();
     res.status(201).json({ msg: "Delivery person registered successfully" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -76,7 +76,7 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -91,7 +91,7 @@ const getDeliveryPersons = async (req, res) => {
     const deliveryPersons = await DeliveryPerson.find(filter);
     res.json(deliveryPersons);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -102,7 +102,7 @@ const getDeliveryPersonById = async (req, res) => {
     if (!person) return res.status(404).json({ error: "Delivery person not found" });
     res.json(person);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -116,7 +116,7 @@ const updateDeliveryPerson = async (req, res) => {
     if (!updated) return res.status(404).json({ error: "Delivery person not found" });
     res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: "Bad request" });
   }
 };
 
@@ -132,7 +132,7 @@ const updateAvailability = async (req, res) => {
     if (!updated) return res.status(404).json({ error: "Delivery person not found" });
     res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: "Bad request" });
   }
 };
 
@@ -148,7 +148,7 @@ const updateLocation = async (req, res) => {
     if (!updated) return res.status(404).json({ error: "Delivery person not found" });
     res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: "Bad request" });
   }
 };
 
@@ -173,7 +173,7 @@ const getNearbyDeliveryPersons = async (req, res) => {
 
     res.json(nearby);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -193,7 +193,7 @@ const verifyDeliveryPerson = async (req, res) => {
 
     res.json({ verified: true, verifiedBy: deliveryPerson.verifiedBy });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Internal server error" });
     console.log("Error ", err);
   }
 };
@@ -204,7 +204,7 @@ const getAllDeliveryPersonsIds = async (req, res) => {
     const deliveryPersons = await DeliveryPerson.find({}, "_id");
     res.json(deliveryPersons.map((person) => person._id));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

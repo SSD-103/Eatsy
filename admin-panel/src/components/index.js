@@ -6,6 +6,9 @@ import Sidebar from "./Sidebar/Sidebar";
 
 import Footer from "./Footer/Footer";
 
+import Forbidden from "./Cards/Forbidden";
+import RequireLogin from "./Cards/RequireLogin";
+
 export {
   //Logos
   ThemeLogo,
@@ -19,4 +22,7 @@ export {
 
   //Common
   Footer,
+
+  Forbidden,
+  RequireLogin,
 };
