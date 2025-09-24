@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { userAPI } from '../../../admin-panel/src/services';
 import { useToast } from '../../../admin-panel/src/utils/alert-utils/ToastUtil';
+import { verifyDeliveryPerson } from '../utils/alert-utils/verify-delivery';
 
 function UserManagement() {
   const [deliveryPersons, setDeliveryPersons] = useState([]);
@@ -23,8 +24,8 @@ function UserManagement() {
 
   const verifyDelivery = async (id) => {
     try {
-      await axios.put(userAPI.VerifyDeliveryPerson(id, user.id));
-      fetchRestaurants();
+      await VerifyDeliveryPerson(id, user.id);
+      fetchDeliveryPersons();
       toast.success("Delivery Person verified successfully!");
     } catch (err) {
       console.error("Verification failed", err);
