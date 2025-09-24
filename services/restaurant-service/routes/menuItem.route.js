@@ -15,13 +15,13 @@ const {
 const { protect, authorize } = require("../middleware/auth.middleware");
 
 // Public Routes
-router.get("/", getAllMenuItems); // Anyone can view all menu items
+router.get("/", protect, getAllMenuItems); // Anyone can view all menu items
 
 // This MUST come before /restaurant/:id
 router.get("/restaurant/my-menu-items", protect, authorize("restaurant"), getMyMenuItems);
 
-router.get("/restaurant/:id", getMenuItemsByRestaurantID); // View menu by restaurant
-router.get("/:id", getMenuItemByID); // View single menu item
+router.get("/restaurant/:id", protect, getMenuItemsByRestaurantID); // View menu by restaurant
+router.get("/:id", protect, getMenuItemByID); // View single menu item
 
 // Protected Routes - Restaurant Only
 router.post("/", protect, authorize("restaurant"), createMenuItem);
