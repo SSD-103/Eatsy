@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
 
 const PAYMENT_SERVICE_URL = process.env.PAYMENT_SERVICE_URL || 'http://localhost:4004';
 

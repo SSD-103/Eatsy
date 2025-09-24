@@ -24,7 +24,7 @@ function Home() {
       setIsRestaurantsLoading(false);
       return response;
     } catch (error) {
-      console.error("Failed to fetch restaurants:", error.message);
+      console.error("Failed to fetch restaurants:", error);
       setIsRestaurantsLoading(false);
       return [];
     }

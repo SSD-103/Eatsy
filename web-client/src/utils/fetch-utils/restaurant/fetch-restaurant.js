@@ -11,7 +11,7 @@ export const getMyMenuItems = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch menu items:", error.message);
+        console.error("Failed to fetch menu items:", error);
         return [];
     }
 };
@@ -26,7 +26,7 @@ export const getMyAvailability = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch menu items:", error.message);
+        console.error("Failed to fetch menu items:", error);
         return [];
     }
 };
@@ -41,7 +41,7 @@ export const getMyTopOrders = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch menu items:", error.message);
+        console.error("Failed to fetch menu items:", error);
         return [];
     }
 };
@@ -56,7 +56,7 @@ export const getMyRecentOrders = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch menu items:", error.message);
+        console.error("Failed to fetch menu items:", error);
         return [];
     }
 };

@@ -51,7 +51,7 @@ function Orders() {
       setOrders(ordersData);
     } catch (err) {
       setError("Failed to fetch orders. Please try again.");
-      toastError(err.message);
+      toastError("Failed to fetch orders. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ function Orders() {
       success(`Order ${action}ed successfully`);
       fetchOrders();
     } catch (err) {
-      toastError(err.message);
+      toastError("Failed to update order. Please try again.");
     }
   };
 
@@ -94,7 +94,7 @@ function Orders() {
       success("Order status updated");
       fetchOrders();
     } catch (err) {
-      toastError(err.message);
+      toastError("Failed to update order. Please try again.");
     }
   };
 

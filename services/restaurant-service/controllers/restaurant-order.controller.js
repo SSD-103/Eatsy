@@ -28,7 +28,7 @@ const getMyTopOrders = async (req, res) => {
       res.json(topOrders);
     } catch (error) {
       console.error("Error in getMyTopOrders:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: "Internal server error" });
     }
   };
   
@@ -44,7 +44,7 @@ const getMyTopOrders = async (req, res) => {
       res.json(recentOrders);
     } catch (error) {
       console.error("Error in getMyRecentOrders:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: "Internal server error" });
     }
   }
   

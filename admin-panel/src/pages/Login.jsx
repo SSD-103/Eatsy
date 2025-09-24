@@ -38,6 +38,7 @@ function Login() {
       });
 
       if (response.status === 200) {
+        console.log("Log sucess");
         const { token } = response.data;
         if (!token) {
           throw new Error("No token received from server");
@@ -45,8 +46,6 @@ function Login() {
 
         const decodedToken = jwtDecode(token);
         // console.log("Decoded JWT:", decodedToken);
-
-        localStorage.setItem("token", token);
 
         localStorage.setItem(
           "user",
