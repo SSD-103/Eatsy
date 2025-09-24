@@ -12,7 +12,7 @@ export const updateMyRestaurantAvailability = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Failed to update restaurant availability:", error.message);
+        console.error("Failed to update restaurant availability:", error);
         return null;
     }
 };

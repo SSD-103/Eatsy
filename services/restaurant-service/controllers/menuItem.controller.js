@@ -34,6 +34,7 @@ const getAllMenuItems = async (req, res) => {
   } catch (error) {
     logger.error("Error retrieving all menu items", { error: error.message });
     res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -126,7 +127,7 @@ const getMenuItemsByRestaurantID = async (req, res) => {
       restaurantId: req.params.id,
       error: error.message,
     });
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -146,7 +147,7 @@ const getMyMenuItems = async (req, res) => {
       restaurantId: id,
       error: error.message,
     });
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -193,7 +194,7 @@ const updateMenuItemAvailability = async (req, res) => {
       restaurantId: id,
       error: error.message,
     });
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -243,7 +244,7 @@ const updateMyMenuItem = async (req, res) => {
       restaurantId: id,
       error: error.message,
     });
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -288,7 +289,7 @@ const deleteMyMenuItem = async (req, res) => {
       restaurantId: id,
       error: error.message,
     });
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

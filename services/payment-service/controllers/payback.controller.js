@@ -39,7 +39,7 @@ const createPayback = async (req, res) => {
         res.status(201).json(payback);
 
     } catch (error) {
-        console.error("Error creating payback:", error.message);
+        console.error("Error creating payback:", error);
         res.status(500).json({ message: "Server error while creating payback." });
     }
 };
@@ -88,7 +88,7 @@ const completePayback = async (req, res) => {
 
         return res.status(200).json(updatedPayback);
     } catch (error) {
-        console.error("Error completing payback:", error.message);
+        console.error("Error completing payback:", error);
         return res.status(500).json({ message: "Server error while completing payback." });
     }
 };
@@ -98,7 +98,7 @@ const getPaybacks = async (req, res) => {
         const paybacks = await Payback.find();
         res.status(200).json(paybacks);
     } catch (error) {
-        console.error("Error fetching paybacks:", error.message);
+        console.error("Error fetching paybacks:", error);
         res.status(500).json({ message: "Server error while fetching paybacks." });
     }
 };
@@ -109,7 +109,7 @@ const getPaybackByOrderId = async (req, res) => {
         const paybacks = await Payback.find({ refNo: id });
         res.status(200).json(paybacks);
     } catch (error) {
-        console.error("Error fetching paybacks:", error.message);
+        console.error("Error fetching paybacks:", error);
         res.status(500).json({ message: "Server error while fetching paybacks." });
     }
 };
@@ -121,7 +121,7 @@ const getPaybackByReceiverId = async (req, res) => {
         const paybacks = await Payback.find({ receiverId: id, receiverType: type});
         res.status(200).json(paybacks);
     } catch (error) {
-        console.error("Error fetching paybacks:", error.message);
+        console.error("Error fetching paybacks:", error);
         res.status(500).json({ message: "Server error while fetching paybacks." });
     }
 };

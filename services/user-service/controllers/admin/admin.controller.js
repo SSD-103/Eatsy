@@ -30,7 +30,7 @@ const register = async (req, res) => {
     await newAdmin.save();
     res.status(201).json({ msg: "Admin registered successfully" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -61,7 +61,7 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -70,7 +70,7 @@ const getAllAdmins = async (req, res) => {
     const admins = await Admin.find().select("-password");
     res.status(200).json(admins);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -82,7 +82,7 @@ const getAdminByID = async (req, res) => {
     }
     res.status(200).json(admin);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 

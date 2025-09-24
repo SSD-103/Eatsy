@@ -3,6 +3,8 @@ services:
     build: ./services/user-service
     ports:
       - "4000:3000"
+    environment:
+      - MONGO_URI=${USER_MONGO_URI}
     networks:
       - eatsy-network
       
@@ -10,6 +12,8 @@ services:
     build: ./services/restaurant-service
     ports:
       - "4001:3000"
+    environment:
+      - MONGO_URI=${RESTAURANT_MONGO_URI}
     networks:
       - eatsy-network
 
@@ -17,6 +21,8 @@ services:
     build: ./services/order-service
     ports:
       - "4002:3000"
+    environment:
+      - MONGO_URI=${ORDER_MONGO_URI}
     networks:
       - eatsy-network
 
@@ -24,6 +30,8 @@ services:
     build: ./services/delivery-service
     ports:
       - "4003:3000"
+    environment:
+      - MONGO_URI=${DELIVERY_MONGO_URI}
     networks:
       - eatsy-network
 
@@ -31,6 +39,12 @@ services:
     build: ./services/payment-service
     ports:
       - "4004:3000"
+    environment:
+      - MONGO_URI=${PAYMENT_MONGO_URI}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_CUSTOMER_ID=${STRIPE_CUSTOMER_ID}
+      - MAIL_USER=${PAYMENT_MAIL_USER}
+      - MAIL_PASS=${PAYMENT_MAIL_PASS}
     networks:
       - eatsy-network
 
@@ -38,6 +52,8 @@ services:
     build: ./services/notification-service
     ports:
       - "4005:3000"
+    environment:
+      - MONGO_URI=${NOTIFICATION_MONGO_URI}
     networks:
       - eatsy-network
 

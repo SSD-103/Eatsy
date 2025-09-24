@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useToast } from '../utils/alert-utils/ToastUtil';
 import { paymentAPI, orderAPI, userAPI } from '../../../admin-panel/src/services';
 import { useToast } from '../../../admin-panel/src/utils/alert-utils/ToastUtil';
+import { verifyRestaurant } from '../utils/alert-utils/verify-restaurant';
 
 function RestaurantManagement() {
   const [restaurants, setRestaurants] = useState([]);
@@ -21,9 +23,9 @@ function RestaurantManagement() {
     }
   };
 
-  const verifyRestaurant = async (id) => {
+  const verifySelectedRestaurant = async (id) => {
     try {
-      await axios.put(userAPI.VerifyRestaurant(id, user.id));
+      await verifyRestaurant(id, user.id);
       fetchRestaurants();
       toast.success("Restaurant verified successfully!");
     } catch (err) {
@@ -69,7 +71,7 @@ function RestaurantManagement() {
                 </td>
                 <td className="space-x-2">
                   {r.verifiedBy == null && (
-                    <button className="btn btn-xs btn-success" onClick={() => verifyRestaurant(r._id)}>
+                    <button className="btn btn-xs btn-success" onClick={() => verifySelectedRestaurant(r._id)}>
                       Verify
                     </button>
                   )}

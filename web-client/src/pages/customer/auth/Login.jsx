@@ -3,7 +3,7 @@ import { ThemeButton, CloseButton, ThemeLogo } from "../../../components";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { userAPI } from "../../../services";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Note: not needed anymore since no token in response
 import { useToast } from "../../../utils/alert-utils/ToastUtil";
 import { useDispatch } from "react-redux";
 import { setLoginCustomer } from "../../../redux/customer/customerSlice";
@@ -37,30 +37,23 @@ function Login() {
       const response = await axios.post(userAPI.CustomerLogin, {
         username: loginData.username,
         password: loginData.password,
-      });
+      }, { withCredentials: true }); // Add withCredentials for cookies
 
       if (response.status === 200) {
-        const { token } = response.data;
-        if (!token) {
-          throw new Error("No token received from server");
-        }
-
-        const decodedToken = jwtDecode(token);
-
-        localStorage.setItem("token", token);
-
+        // No token in response; cookies are set by server
+        // Store user data
         localStorage.setItem(
           "user",
           JSON.stringify({
-            id: decodedToken.id,
+            id: response.data.user.id,
             name: response.data.user.name,
             username: response.data.user.username,
           })
         );
 
-        // Dispatch the setLoginCustomer action to store the user data in Redux state
+        // Dispatch to Redux
         dispatch(setLoginCustomer({
-          id: decodedToken.id,
+          id: response.data.user.id,
           name: response.data.user.name,
           username: response.data.user.username,
         }));
