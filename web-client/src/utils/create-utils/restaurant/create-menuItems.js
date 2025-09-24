@@ -11,7 +11,7 @@ export const createMenuItems = async (payload) => {
         });
         return response;
     } catch (error) {
-        console.error("Failed to create menu items:", error.message);
+        console.error("Failed to create menu items:", error);
         return null;
     }
 };

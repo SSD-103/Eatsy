@@ -8,6 +8,7 @@ const CustomerSchema = new mongoose.Schema(
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     profileImage: { type: String, default: "" },
+    refreshTokens: [{ type: String }], // Array of hashed refresh tokens for multi-device support
   },
   { timestamps: true }
 );
