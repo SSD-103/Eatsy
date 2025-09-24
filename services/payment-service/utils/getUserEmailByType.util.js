@@ -1,10 +1,17 @@
-const axios = require("axios");
+const axios = require('../common/safeAxios');
+const mongoose = require('mongoose');
 
 const USER_SERVICE_URL = process.env.USER_SERVICE_URL || "http://localhost:4000";
 
 // Helper function for sending mails
 const getUserEmailByType = async ({ id, receiverType }) => {
   try {
+    // Validate ID to avoid unexpected URL interpolation
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      console.error('Invalid id passed to getUserEmailByType:', id);
+      return null;
+    }
+
     let response;
 
     if (receiverType === "restaurant") {
@@ -22,7 +29,7 @@ const getUserEmailByType = async ({ id, receiverType }) => {
     throw new Error("Invalid receiverType");
 
   } catch (error) {
-    console.error(`Failed to retrieve email for ${receiverType} (ID: ${id}):`, error.message);
+    console.error(`Failed to retrieve email for ${receiverType} (ID: ${id}):`, error);
     return null;
   }
 };

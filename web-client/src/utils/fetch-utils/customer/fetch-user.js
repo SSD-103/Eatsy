@@ -21,6 +21,7 @@ export const getCustomerLocations = async () => {
     }
   } catch (error) {
     toast.error("Error fetching locations");
+    console.error('Error fetching locations:', error);
     throw error;
   }
 };
@@ -30,7 +31,7 @@ export const getAllRestaurants = async () => {
       const response = await axios.get(userAPI.getAllRestaurants);
       return response.data;
   } catch (error) {
-      console.error("Failed to fetch restaurants:", error.message);
+    console.error("Failed to fetch restaurants:", error);
       return [];
   }
 };
@@ -40,7 +41,7 @@ export const getRestaurantByID = async (id) => {
       const response = await axios.get(`${userAPI.getRestaurantByID(id)}`);
       return response.data;
   } catch (error) {
-      console.error("Failed to fetch customer from user-service:", error.message);
+    console.error("Failed to fetch customer from user-service:", error);
       return null;
   }
 };

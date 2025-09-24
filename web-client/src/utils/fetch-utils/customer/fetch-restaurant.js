@@ -6,7 +6,7 @@ export const getAllCategories = async () => {
         const response = await axios.get(restaurantAPI.getAllCategories);
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch categories:", error.message);
+        console.error("Failed to fetch categories:", error);
         return [];
     }
 };
@@ -16,7 +16,7 @@ export const getMenuItemsByRestaurantID = async (id) => {
         const response = await axios.get(`${restaurantAPI.getMenuItemsByRestaurantID(id)}`);
         return response.data;
     } catch (error) {
-        console.error("Failed to fetch menu items:", error.message);
+        console.error("Failed to fetch menu items:", error);
         return [];
     }
 }

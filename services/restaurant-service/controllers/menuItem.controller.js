@@ -7,7 +7,7 @@ const getAllMenuItems = async (req, res) => {
     const menuItems = await MenuItem.find().populate("category");
     res.json(menuItems);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -27,7 +27,7 @@ const createMenuItem = async (req, res) => {
     const menuItem = await MenuItem.create(updatedData);
     res.status(201).json(menuItem);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -38,7 +38,7 @@ const getMenuItemByID = async (req, res) => {
     );
     res.json(menuItem);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -64,7 +64,7 @@ const getMenuItemsByRestaurantID = async (req, res) => {
 
     res.json({ menuItems: updatedMenuItems });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -76,7 +76,7 @@ const getMyMenuItems = async (req, res) => {
     }).populate("category");
     res.json(menuItems);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -109,7 +109,7 @@ const updateMenuItemAvailability = async (req, res) => {
 
     res.json(menuItem);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -143,7 +143,7 @@ const updateMyMenuItem = async (req, res) => {
     await menuItem.save();
     res.json(menuItem);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -173,7 +173,7 @@ const deleteMyMenuItem = async (req, res) => {
     await MenuItem.findByIdAndDelete(req.params.id);
     res.json({ message: "Menu item deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

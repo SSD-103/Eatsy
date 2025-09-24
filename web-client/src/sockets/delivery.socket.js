@@ -21,7 +21,7 @@ export const connectDeliverySocket = (deliveryPersonID) => {
   });
 
   socket.on("connect_error", (error) => {
-    console.error("Socket connection error:", error.message);
+    console.error("Socket connection error:", error);
   });
 };
 

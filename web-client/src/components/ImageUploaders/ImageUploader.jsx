@@ -34,7 +34,7 @@ const ImageUploader = ({ setImageUrl }) => {
       .upload(`uploads/${fileName}`, file);
 
     if (error) {
-      console.error('Upload Error:', error.message);
+      console.error('Upload Error:', error);
       setLoading(false);
       return;
     }

@@ -1,8 +1,8 @@
-const axios = require('axios');
+const axios = require('../common/safeAxios');
 
 exports.sendSMS = async (phone, message) => {
   try {
-    const response = await axios.post('https://api.twilio.com/2010-04-01/Accounts/' + process.env.TWILIO_ACCOUNT_SID + '/Messages.json', {
+  const response = await axios.post('https://api.twilio.com/2010-04-01/Accounts/' + process.env.TWILIO_ACCOUNT_SID + '/Messages.json', {
       Body: message,
       From: process.env.TWILIO_PHONE_NUMBER,
       To: phone
@@ -20,7 +20,7 @@ exports.sendSMS = async (phone, message) => {
 
 exports.sendEmail = async (to, subject, text) => {
   try {
-    const response = await axios.post('https://api.sendgrid.com/v3/mail/send', {
+  const response = await axios.post('https://api.sendgrid.com/v3/mail/send', {
       personalizations: [{ to: [{ email: to }] }],
       from: { email: 'no-reply@fooddelivery.com' },
       subject,

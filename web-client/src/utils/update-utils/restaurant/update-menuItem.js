@@ -21,7 +21,7 @@ export const updateMenuItemAvailability = async (id) => {
     );
     return response;
   } catch (error) {
-    console.error("Failed to update menu item availability:", error.message);
+    console.error("Failed to update menu item availability:", error);
     return null;
   }
 };
@@ -40,7 +40,7 @@ export const updateMyMenuItem = async (id, payload) => {
     );
     return response;
   } catch (error) {
-    console.error("Failed to update menu item:", error.message);
+    console.error("Failed to update menu item:", error);
     return null;
   }
 };

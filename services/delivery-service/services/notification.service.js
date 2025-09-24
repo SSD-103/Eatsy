@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('../common/safeAxios');
 
 exports.sendSMS = async (phone, message) => {
   try {
