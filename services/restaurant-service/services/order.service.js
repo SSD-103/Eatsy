@@ -8,7 +8,7 @@ const getMyOrders = async (userId) => {
             console.error('Invalid userId passed to getMyOrders:', userId);
             throw new Error('Invalid user id');
         }
-        const response = await axios.get(`${ORDER_SERVICE_URL}/order/restaurant/${userId}`);
+        const response = await axios.get(`${ORDER_SERVICE_URL}/api/order/restaurant/${userId}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching orders:", error);

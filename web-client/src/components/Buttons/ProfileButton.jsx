@@ -20,7 +20,6 @@ function ProfileButton({ role }) {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
     if (RoleLogouts[role]) {
       RoleLogouts[role]();
     }
