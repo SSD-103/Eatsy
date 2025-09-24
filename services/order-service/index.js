@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const deliveryOrderRoutes = require("./routes/delivery.order.route");
+const {apiLimiter} = require('./middleware/rateLimiter');
 
 if (process.env.NODE_ENV === "production") {
   dotenv.config({ path: ".env.production" });
@@ -16,6 +17,9 @@ const io = require("./sockets/socket").init(http);
 
 app.use(cors());
 app.use(express.json());
+
+// Apply global limiter to all API routes
+app.use("/api", apiLimiter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Order Service");

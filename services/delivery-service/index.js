@@ -6,6 +6,7 @@ const { Server } = require("socket.io");
 const dotenv = require("dotenv");
 const deliveryRoutes = require("./routes/delivery.routes");
 const socketHandler = require("./socket");
+const { apiLimiter } = require("./middleware/rateLimiter");
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.production' });
@@ -32,6 +33,10 @@ io.on("connection", (socket) => {
 
 app.use(cors());
 app.use(express.json());
+
+
+// Apply global limiter to all API routes
+app.use("/api", apiLimiter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Delivery Service");

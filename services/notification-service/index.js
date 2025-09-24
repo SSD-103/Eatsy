@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const {apiLimiter} = require('./middleware/rateLimiter');
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.production' });
@@ -14,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Apply global limiter to all API routes
+app.use("/api", apiLimiter);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Notification Service');
