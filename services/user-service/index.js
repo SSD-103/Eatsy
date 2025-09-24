@@ -3,6 +3,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const http = require('http');
+const cookieParser = require('cookie-parser'); // Added for handling cookies
+const rateLimit = require('express-rate-limit'); // Added for general rate limiting
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.production' });
@@ -13,7 +15,19 @@ if (process.env.NODE_ENV === 'production') {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// General rate limiter (e.g., 100 requests per 15 minutes per IP)
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(generalLimiter);
+
+// Middlewares
+app.use(cors({ credentials: true, origin: true })); // Allow credentials for cookies
+app.use(cookieParser());
 app.use(express.json());
 
 // Routes
